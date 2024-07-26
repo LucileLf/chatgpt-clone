@@ -1,4 +1,4 @@
-import './signoutPage.scss'
+import './signoutPage.css'
 
 const SignoutPage = () => {
   return (
