@@ -1,23 +1,39 @@
 import './rootLayout.scss'
 import { Link, Outlet } from 'react-router-dom'
+import { ClerkProvider, SignedOut, SignInButton, SignedIn, UserButton } from '@clerk/clerk-react'
+
+console.log('import.meta.env', import.meta.env);
+// import env variable
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+console.log('PUBLISHABLE_KEY', PUBLISHABLE_KEY);
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key")
+}
 
 const RootLayout = () => {
   return (
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
     <div className='rootLayout'>
       <header>
         <Link to="/" className='logo'>
           <img src="/logo.png" alt="" />
           <span>LAMA AI</span>
         </Link>
-        <Link to="/dashboard" className='user'>
-          <span>User</span>
-          {/* <div className="user">User</div> */}
-        </Link>
+        <div className='user'>
+          {/* <SignedOut>
+            <SignInButton />
+          </SignedOut> */}
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
       </header>
       <main>
         <Outlet/>
       </main>
     </div>
+    </ClerkProvider>
   )
 }
 
