@@ -20,20 +20,26 @@ const router = createBrowserRouter([
           element: <Homepage/>,
         },
         {
-          path: "/sign-in",
+          path: "/sign-in/*",
           element: <SignInPage/>,
         },
         {
-          path: "/sign-up",
+          path: "/sign-up/*",
           element: <SignUpPage/>,
         },
         {
-          path: "/dashboard",
           element: <DashboardLayout/>,
+          // path: "/dashboard",
           children: [
-            {path:"/dashboard", element: <DashboardPage/>},
-            {path:"/dashboard/chats/:id", element: <ChatPage/>},
-          ]
+            {
+              path: "/dashboard",
+              element: <DashboardPage />,
+            },
+            {
+              path: "/dashboard/chats/:id",
+              element: <ChatPage />,
+            },
+          ],
         },
     ]
   }
