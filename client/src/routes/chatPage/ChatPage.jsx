@@ -1,6 +1,7 @@
 import './chatPage.scss'
 import NewPrompt from '../../components/newPrompt/NewPrompt.jsx'
 
+
 const ChatPage = () => {
 
   return (
