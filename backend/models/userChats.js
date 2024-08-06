@@ -5,25 +5,20 @@ const userChatsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  history:[
+  chats:[
     {
-      role: {
+      _id: {
         type: String,
-        enum: ['user' | 'model'],
         required: true
       },
-      parts: [
-        {
-          text: {
-            type: String,
-            required: true
-          }
-        }
-      ],
-      img:{
+      title: {
         type: String,
-        required: false,
-      }
+        required: true
+      },
+      createdAtDate: {
+        type: Date,
+        default: Date.now()
+      },
     }
   ],
 }, {timestamps: true})
