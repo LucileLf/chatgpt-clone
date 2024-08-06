@@ -3,6 +3,7 @@ import express from "express"
 import cors from "cors"
 import ImageKit from "imagekit"
 import dotenv from 'dotenv';
+import mongoose from 'mongoose'
 
 dotenv.config();
 
@@ -18,6 +19,16 @@ const app = express();
 app.use(cors({
   origin: process.env.CLIENT_URL,
 }))
+
+const connect = async ()=>{
+  try {
+    await mongoose.connect(process.env.MONGO)
+    console.log("connected to mongoDB");
+  }catch(err){
+    console.log(err);
+  }
+}
+
 
 const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGE_KIT_ENDPOINT,
@@ -39,5 +50,6 @@ app.get("/api/upload", (req, res)=>{
 })
 
 app.listen(port, ()=> {
+  connect()
   console.log(`server running on ${port}`);
 })
