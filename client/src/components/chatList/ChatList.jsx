@@ -2,6 +2,8 @@ import './chatList.scss'
 import { Link } from 'react-router-dom'
 
 const ChatList = () => {
+
+
   return (
     <div className='chatList'>
       <span className='title'>DASHBOARD</span>
