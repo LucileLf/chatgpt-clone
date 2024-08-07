@@ -1,8 +1,19 @@
 import './chatList.scss'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+
 
 const ChatList = () => {
 
+  const { isPending, error, data: userChatList } = useQuery({
+    queryKey: ['repoData'],
+    queryFn: () =>
+      fetch(`${import.meta.env.VITE_API_URL}/api/userchats`,{
+        credentials:"include"
+      }).then((res) =>
+        res.json(),
+      ),
+  })
 
   return (
     <div className='chatList'>
@@ -13,15 +24,9 @@ const ChatList = () => {
       <hr/>
       <span className='title'>RECENT CHATS</span>
       <div className="list">
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
-        <Link to='/'>My chat title</Link>
+        {isPending ? "Loading..." : error ? "Something went wrong" : userChatList?.map(chat=>(
+          <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>{chat.title}</Link>
+        ))}
       </div>
       <hr />
       <div className="upgrade">

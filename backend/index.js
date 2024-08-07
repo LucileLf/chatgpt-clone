@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose'
 import UserChats from "./models/userChats.js";
 import Chat from "./models/chat.js";
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const app = express();
 // MIDDLEWARES
 app.use(cors({
   origin: process.env.CLIENT_URL,
+  credentials: true
 }))
 
 app.use(express.json())
@@ -42,7 +44,6 @@ const imagekit = new ImageKit({
   privateKey: process.env.IMAGE_KIT_PRIVATE_KEY
 });
 
-
 // ENDPOINTS
 app.get("/test", (req, res)=>{
   res.send("it works!")
@@ -54,8 +55,18 @@ app.get("/api/upload", (req, res)=>{
   // res.send("it works!")
 })
 
-app.post("/api/chats", async (req, res)=>{
-  const {userId, text} = req.body;
+// app.get("/api/test", ClerkExpressRequireAuth(), (req, res)=>{
+//   const userId = req.auth.userId;
+//   console.log("userId", userId);
+//   res.send("success!");
+//   // res.send("it works!")
+// })
+
+
+
+app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res)=>{
+  const userId = req.auth.userId;
+  const {text} = req.body;
   try {
     // CREATE A NEW CHAT
     const newChat = new Chat({
@@ -99,6 +110,23 @@ app.post("/api/chats", async (req, res)=>{
     res.status(500).send("Error creating")
   }
   // res.send("it works!")
+})
+
+app.get("/api/userchats", ClerkExpressRequireAuth(), async (req, res)=>{
+  const userId=req.auth.userId;
+  try{
+    const userChats = await UserChats.find({userId}) // userId: userId
+    console.log("first chat",userChats[0].chats)
+    res.status(200).send(userChats[0].chats)
+  } catch(err) {
+    console.log(err);
+    res.status(500).send("Error fetching  chat!")
+  }
+})
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(401).send("Unauthenticated!")
 })
 
 app.listen(port, ()=> {

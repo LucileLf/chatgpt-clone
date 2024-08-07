@@ -1,6 +1,11 @@
 import './rootLayout.scss'
 import { Link, Outlet } from 'react-router-dom'
-import { ClerkProvider, SignedOut, SignInButton, SignedIn, UserButton } from '@clerk/clerk-react'
+import { ClerkProvider, SignedIn, UserButton } from '@clerk/clerk-react'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
 
 console.log('import.meta.env', import.meta.env);
 // import env variable
@@ -11,28 +16,32 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
 }
 
+const queryClient = new QueryClient()
+
 const RootLayout = () => {
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-    <div className='rootLayout'>
-      <header>
-        <Link to="/" className='logo'>
-          <img src="/logo.png" alt="" />
-          <span>LAMA AI</span>
-        </Link>
-        <div className='user'>
-          {/* <SignedOut>
-            <SignInButton />
-          </SignedOut> */}
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+      <QueryClientProvider client={queryClient}>
+        <div className='rootLayout'>
+          <header>
+            <Link to="/" className='logo'>
+              <img src="/logo.png" alt="" />
+              <span>LAMA AI</span>
+            </Link>
+            <div className='user'>
+              {/* <SignedOut>
+                <SignInButton />
+              </SignedOut> */}
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
+          </header>
+          <main>
+            <Outlet/>
+          </main>
         </div>
-      </header>
-      <main>
-        <Outlet/>
-      </main>
-    </div>
+      </QueryClientProvider>
     </ClerkProvider>
   )
 }
