@@ -103,7 +103,7 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res)=>{
           }
         }
       })
-      res.status(201).send(newChat._id)
+      res.status(201).send(newChat._id) // returning new chat id
     }
   } catch (err) {
     console.log(err);
