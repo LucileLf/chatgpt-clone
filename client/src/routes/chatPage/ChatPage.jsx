@@ -45,7 +45,8 @@ const ChatPage = () => {
           ))}
 
           {/* <div className="message user">Test message from user</div> */}
-          <NewPrompt/>
+
+          {chatMessages && <NewPrompt chatData={chatMessages}/>}
           {/* <div ref={endRef} /> */}
         </div>
       </div>

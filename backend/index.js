@@ -135,6 +135,36 @@ app.get("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res)=>{
   }
 })
 
+//update an existing chat
+app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req,res)=>{
+  const userId = req.auth.userId;
+
+  //ai answers word by word so we need to wait for completed answer, and then q+a(+img) together
+  const { question, answer, img } = req.body;
+  const newItems = [
+    // if new chat, user msg (question) is already in db -> send only answer
+    ...(question
+      ? [{role:'user', parts:[{text:question}], ...(img && {img})}]
+      : []),
+    {role:'model', parts:[{text:answer}], ...(img && {img})},
+  ]
+  try{
+    const updatedChat = await Chat.updateOne({_id:req.params.id, userId}, {
+      //add new conversation to history
+      $push:{ // MongoDB update operator to add new element to array field
+        history:{ // array field
+          $each:newItems, // modifier that allows to push multiple elements into the array at once
+        }
+      }
+    })
+
+    res.status(200).send(updatedChat)
+  } catch(err) {
+    console.log(err);
+    res.status(500).send("Error adding conversation!")
+  }
+})
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(401).send("Unauthenticated!")
