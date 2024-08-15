@@ -63,7 +63,7 @@ const NewPrompt = ({chatData}) => {
       queryClient.invalidateQueries({ queryKey: ['chat', chatData._id] })
       .then(()=>{
         // reset form ref
-        formRef.current.reset()
+        // formRef.current.reset()
         //reset answer, question, image
         setQuestion("")
         setAnswer("")
@@ -105,6 +105,7 @@ const NewPrompt = ({chatData}) => {
     e.preventDefault();
     const text = e.target.text.value;
     if (!text) return;
+    formRef.current.reset()
     add(text, false)
   }
 
